@@ -23,7 +23,7 @@ pipeline {
         }
         stage('Build and Run') {
             steps {
-                sh 'docker compose up -d --build'
+                sh 'docker-compose up -d --build'
             }
         }
         stage('Acceptance Test') {
