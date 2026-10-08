@@ -1,0 +1,22 @@
+version: "3.8"
+services:
+  # The new PostgreSQL database container
+  db:
+    image: postgres:15
+    environment:
+      POSTGRES_USER: myuser
+      POSTGRES_PASSWORD: mypassword
+      POSTGRES_DB: rise_db
+    ports:
+      - "5432:5432"
+
+  # Your existing web application container
+  webapp:
+    build: .
+    ports:
+      - "8081:8080" # Ensure this matches the port your app exposes
+    environment:
+      # This overrides the connection string so the app connects to the 'db' container
+      - ConnectionStrings__DefaultConnection=Host=db;Database=rise_db;Username=myuser;Password=mypassword
+    depends_on:
+      - db
