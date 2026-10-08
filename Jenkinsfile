@@ -3,8 +3,22 @@ pipeline {
     stages {
         stage('Unit Tests') {
             steps {
-                // Uses a temporary Docker container to test the .NET code
-                sh 'docker run --rm -v ${WORKSPACE}:/app -w /app mcr.microsoft.com/dotnet/sdk:10.0 dotnet test'
+                sh '''
+                # 1. Clean up any leftover test containers
+                docker rm -f test-runner || true
+                
+                # 2. Start a temporary test container in the background
+                docker run -d --name test-runner -w /app mcr.microsoft.com/dotnet/sdk:9.0 sleep 600
+                
+                # 3. Copy the Jenkins workspace files directly into the container (bypassing the volume bug)
+                docker cp . test-runner:/app/
+                
+                # 4. Execute the tests
+                docker exec test-runner dotnet test
+                
+                # 5. Clean up the container
+                docker rm -f test-runner
+                '''
             }
         }
         stage('Build and Run') {
