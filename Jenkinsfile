@@ -37,7 +37,7 @@ pipeline {
         stage('Acceptance Test') {
             steps {
                 sleep time: 25, unit: 'SECONDS'
-                sh 'curl http://172.16.0.10:8081/ | grep "RISE"'
+                sh 'curl http://172.16.0.10:8081/ | grep -i "rise"'
             }
         }
     }
