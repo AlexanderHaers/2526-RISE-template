@@ -41,9 +41,4 @@ pipeline {
             }
         }
     }
-    post {
-        always {
-            sh 'docker rm -f webapp db || true'
-        }
-    }
 }
